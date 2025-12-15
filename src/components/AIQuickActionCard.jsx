@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion';
 import Card from './Card';
 
-const AIQuickActionCard = ({ 
-  icon, 
-  title, 
+const AIQuickActionCard = ({
+  icon,
+  title,
   description,
-  onClick 
+  onClick
 }) => {
   return (
-    <Card 
-      className="cursor-pointer group relative overflow-hidden"
+    <Card
+      className="cursor-pointer group relative overflow-hidden h-full"
       onClick={onClick}
     >
       {/* Gradient Background on Hover */}
@@ -37,8 +37,6 @@ const AIQuickActionCard = ({
       {/* Animated Border */}
       <motion.div
         className="absolute inset-0 rounded-xl border-2 border-primary opacity-0 group-hover:opacity-100"
-        initial={{ scale: 0.8 }}
-        whileHover={{ scale: 1 }}
         transition={{ duration: 0.2 }}
       />
     </Card>

@@ -120,6 +120,7 @@ const AIPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              className="h-full"
             >
               <AIQuickActionCard
                 icon={action.icon}
@@ -162,8 +163,8 @@ const AIPage = () => {
                   <div
                     className={`
                       max-w-[80%] px-4 py-3 rounded-2xl
-                      ${message.isUser 
-                        ? 'bg-gradient-to-r from-primary to-primary-light text-white rounded-br-sm' 
+                      ${message.isUser
+                        ? 'bg-gradient-to-r from-primary to-primary-light text-white rounded-br-sm'
                         : 'glass text-gray-900 dark:text-gray-100 rounded-bl-sm'
                       }
                     `}
@@ -173,7 +174,7 @@ const AIPage = () => {
                 </motion.div>
               ))
             )}
-            
+
             {isTyping && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -208,8 +209,8 @@ const AIPage = () => {
                 transition-all duration-200
               "
             />
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               icon={<Send className="w-4 h-4" />}
               disabled={!chatInput.trim()}
             >
@@ -221,8 +222,8 @@ const AIPage = () => {
 
       {/* AI Response Modal */}
       {selectedAction && (
-        <Modal 
-          isOpen={true} 
+        <Modal
+          isOpen={true}
           onClose={closeModal}
           title={selectedAction.title}
         >

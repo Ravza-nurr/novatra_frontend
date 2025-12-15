@@ -13,6 +13,8 @@ import TasksPage from './pages/TasksPage';
 import ActivityPage from './pages/ActivityPage';
 import ChatPage from './pages/ChatPage';
 import AIPage from './pages/AIPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -77,6 +79,22 @@ export const router = createBrowserRouter([
         element: (
           <PublicRoute>
             <RegisterPage />
+          </PublicRoute>
+        )
+      },
+      {
+        path: 'forgot-password',
+        element: (
+          <PublicRoute>
+            <ForgotPasswordPage />
+          </PublicRoute>
+        )
+      },
+      {
+        path: 'reset-password',
+        element: (
+          <PublicRoute>
+            <ResetPasswordPage />
           </PublicRoute>
         )
       }

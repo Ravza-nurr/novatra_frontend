@@ -5,6 +5,8 @@ import { Mail, Lock, LogIn } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import GoldenStarLogo from '../components/GoldenStarLogo';
+import MouseFollowStars from '../components/MouseFollowStars';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -33,31 +35,22 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+    <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto relative">
+      <MouseFollowStars />
+
       {/* Left Side - Branding */}
       <motion.div
-        className="hidden md:flex flex-col justify-center p-12 bg-gradient-to-br from-primary to-primary-light rounded-2xl text-white"
+        className="hidden md:flex flex-col justify-center p-12 bg-gradient-to-br from-primary to-primary-light rounded-2xl text-white relative z-10 h-full"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <motion.div
-          animate={{
-            y: [0, -10, 0],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        >
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center mb-6">
-            <span className="text-4xl font-bold">N</span>
-          </div>
-        </motion.div>
+        <div className="flex items-center justify-center mb-6">
+          <GoldenStarLogo />
+        </div>
 
-        <h1 className="text-4xl font-bold mb-4">NOVATRA V4</h1>
-        <p className="text-lg opacity-90 mb-8">
+        <h1 className="text-4xl font-bold mb-4 text-center">NOVATRA</h1>
+        <p className="text-lg opacity-90 mb-8 text-center">
           Premium Proje Yönetim Platformu
         </p>
 
@@ -67,8 +60,8 @@ const LoginPage = () => {
               ✓
             </div>
             <div>
-              <h3 className="font-semibold mb-1">Akıllı Kanban Board</h3>
-              <p className="text-sm opacity-80">Görevlerinizi sürükle-bırak ile yönetin</p>
+              <h3 className="font-semibold mb-1">Akıllı Görev Akışı Yönetimi</h3>
+              <p className="text-sm opacity-80">Süreçlerinizi dinamik ve modern bir yapıda düzenleyin</p>
             </div>
           </div>
 
@@ -96,12 +89,12 @@ const LoginPage = () => {
 
       {/* Right Side - Login Form */}
       <motion.div
-        className="flex flex-col justify-center p-8 md:p-12"
+        className="flex flex-col p-8 md:p-12 relative z-10 h-full"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-2xl border border-border-light dark:border-border-dark">
+        <div className="bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-2xl border border-border-light dark:border-border-dark h-full flex flex-col justify-center">
           <h2 className="text-3xl font-bold gradient-text mb-2">Hoş Geldiniz</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
             Hesabınıza giriş yapın
@@ -128,18 +121,28 @@ const LoginPage = () => {
               required
             />
 
-            <Input
-              type="password"
-              label="Şifre"
-              value={formData.password}
-              onChange={handleChange('password')}
-              placeholder="••••••••"
-              icon={<Lock className="w-5 h-5" />}
-              required
-            />
+            <div className="flex flex-col gap-2">
+              <Input
+                type="password"
+                label="Şifre"
+                value={formData.password}
+                onChange={handleChange('password')}
+                placeholder="••••••••"
+                icon={<Lock className="w-5 h-5" />}
+                required
+              />
+              <div className="flex justify-end">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-primary hover:text-primary-dark transition-colors"
+                >
+                  Şifremi Unuttum
+                </Link>
+              </div>
+            </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               fullWidth
               icon={<LogIn className="w-5 h-5" />}
             >
