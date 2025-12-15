@@ -103,7 +103,7 @@ const AIPage = () => {
       <div>
         <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
           <Sparkles className="w-8 h-8 text-primary" />
-          AI Asistan
+          NovaAI
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
           Yapay zeka destekli proje yönetimi asistanınız
@@ -148,7 +148,7 @@ const AIPage = () => {
                 <div>
                   <Sparkles className="w-12 h-12 mx-auto mb-3 text-primary opacity-50" />
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    AI asistanınızla sohbete başlayın
+                    NovaAI ile sohbete başlayın
                   </p>
                 </div>
               </div>
@@ -198,7 +198,7 @@ const AIPage = () => {
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              placeholder="AI asistanınıza bir şey sorun..."
+              placeholder="NovaAI'ye bir şey sorun..."
               className="
                 flex-1 px-4 py-3 rounded-lg
                 bg-surface-light dark:bg-surface-dark

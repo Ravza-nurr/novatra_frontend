@@ -14,7 +14,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
 
   const userProjects = currentUser ? getUserProjects(currentUser.id) : [];
-  const userTasks = tasks.filter(t => 
+  const userTasks = tasks.filter(t =>
     userProjects.some(p => p.id === t.projectId)
   );
 
@@ -32,7 +32,7 @@ const DashboardPage = () => {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl font-bold mb-2">
-          Hoş Geldiniz, {currentUser?.firstName}! 👋
+          Hoş Geldiniz, {currentUser?.firstName}!
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
           İşte projelerinizin genel durumu
@@ -100,7 +100,7 @@ const DashboardPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card 
+                  <Card
                     onClick={() => navigate(`/project/${project.id}`)}
                     className="cursor-pointer"
                   >

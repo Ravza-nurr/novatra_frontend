@@ -45,7 +45,7 @@ const LoginPage = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center justify-center mb-6 w-20 h-20 mx-auto">
           <GoldenStarLogo />
         </div>
 

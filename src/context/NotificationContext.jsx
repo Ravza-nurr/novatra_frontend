@@ -36,19 +36,25 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const markAsRead = (notificationId) => {
-    setNotifications(notifications.map(n => 
+    setNotifications(notifications.map(n =>
       n.id === notificationId ? { ...n, read: true } : n
     ));
   };
 
   const markAllAsRead = (userId) => {
-    setNotifications(notifications.map(n => 
+    setNotifications(notifications.map(n =>
       n.userId === userId ? { ...n, read: true } : n
     ));
   };
 
   const deleteNotification = (notificationId) => {
     setNotifications(notifications.filter(n => n.id !== notificationId));
+  };
+
+  const updateNotification = (notificationId, updates) => {
+    setNotifications(notifications.map(n =>
+      n.id === notificationId ? { ...n, ...updates } : n
+    ));
   };
 
   const getUserNotifications = (userId) => {
@@ -67,6 +73,7 @@ export const NotificationProvider = ({ children }) => {
     markAsRead,
     markAllAsRead,
     deleteNotification,
+    updateNotification,
     getUserNotifications,
     getUnreadCount
   };

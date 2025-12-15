@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import Avatar from './Avatar';
 import NotificationBell from './NotificationBell';
 
+import GoldenStarLogo from './GoldenStarLogo';
+
 const Navbar = () => {
   const { theme, toggleTheme, toggleSidebar } = useContext(UIContext);
   const { currentUser, logout } = useAuth();
@@ -38,22 +40,23 @@ const Navbar = () => {
       transition={{ type: 'spring', stiffness: 200, damping: 20 }}
     >
       {/* Left Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5">
         <button
           onClick={toggleSidebar}
           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors lg:hidden"
         >
           <Menu className="w-5 h-5" />
         </button>
-        
-        <motion.div 
-          className="flex items-center gap-3"
+
+        <motion.div
+          className="flex items-center gap-2 cursor-pointer"
           whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/dashboard')}
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-            <span className="text-white font-bold text-lg">N</span>
+          <div className="w-7 h-7 flex items-center justify-center">
+            <GoldenStarLogo />
           </div>
-          <h1 className="text-xl font-bold gradient-text hidden sm:block">NOVATRA V4</h1>
+          <h1 className="text-xl font-bold gradient-text hidden sm:block">NOVATRA</h1>
         </motion.div>
       </div>
 

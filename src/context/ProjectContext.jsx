@@ -48,7 +48,7 @@ export const ProjectProvider = ({ children }) => {
   };
 
   const updateProject = (projectId, updates) => {
-    setProjects(projects.map(p => 
+    setProjects(projects.map(p =>
       p.id === projectId ? { ...p, ...updates } : p
     ));
   };
@@ -115,6 +115,49 @@ export const ProjectProvider = ({ children }) => {
     });
   };
 
+  const [invitations, setInvitations] = useState([]);
+
+  // Load invitations from localStorage
+  useEffect(() => {
+    const storedInvitations = localStorage.getItem('novatra_invitations');
+    if (storedInvitations) {
+      setInvitations(JSON.parse(storedInvitations));
+    }
+  }, []);
+
+  // Save invitations to localStorage
+  useEffect(() => {
+    if (invitations.length > 0) {
+      localStorage.setItem('novatra_invitations', JSON.stringify(invitations));
+    }
+  }, [invitations]);
+
+  const sendInvitation = (projectId, userId, invitedByUserId, role = 'user') => {
+    const newInvitation = {
+      id: uuidv4(),
+      projectId,
+      userId,
+      invitedByUserId,
+      role,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+    setInvitations([...invitations, newInvitation]);
+    return newInvitation;
+  };
+
+  const respondToInvitation = (invitationId, status) => { // status: 'accepted' or 'rejected'
+    const invitation = invitations.find(i => i.id === invitationId);
+    if (!invitation) return;
+
+    if (status === 'accepted') {
+      addMember(invitation.projectId, invitation.userId, invitation.invitedByUserId, invitation.role);
+    }
+
+    // Remove invitation after response
+    setInvitations(invitations.filter(i => i.id !== invitationId));
+  };
+
   const value = {
     projects,
     createProject,
@@ -125,7 +168,10 @@ export const ProjectProvider = ({ children }) => {
     addMember,
     removeMember,
     addActivity,
-    getUserRoleInProject
+    getUserRoleInProject,
+    invitations,
+    sendInvitation,
+    respondToInvitation
   };
 
   return (

@@ -1,13 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, X } from 'lucide-react';
+import { Bell, X, Check } from 'lucide-react';
 import { useContext, useState, useRef, useEffect } from 'react';
 import { NotificationContext } from '../context/NotificationContext';
 import { useAuth } from '../hooks/useAuth';
+import { useProjects } from '../hooks/useProjects';
 import { formatDistanceToNow } from '../utils/dateUtils';
 
 const NotificationBell = () => {
   const { currentUser } = useAuth();
-  const { getUserNotifications, getUnreadCount, markAsRead, markAllAsRead } = useContext(NotificationContext);
+  const { getUserNotifications, getUnreadCount, markAsRead, markAllAsRead, deleteNotification, updateNotification } = useContext(NotificationContext);
+  const { respondToInvitation } = useProjects();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -104,6 +106,36 @@ const NotificationBell = () => {
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {formatDistanceToNow(notification.timestamp)}
                         </p>
+
+                        {notification.type === 'project_invitation' && notification.payload && (
+                          <div className="flex gap-2 mt-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                respondToInvitation(notification.payload.invitationId, 'accepted');
+                                updateNotification(notification.id, {
+                                  message: `Davet kabul edildi`,
+                                  type: 'info',
+                                  payload: null, // Remove buttons
+                                  read: true
+                                });
+                              }}
+                              className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors"
+                            >
+                              <Check className="w-3 h-3" /> Kabul Et
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                respondToInvitation(notification.payload.invitationId, 'rejected');
+                                deleteNotification(notification.id);
+                              }}
+                              className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200 transition-colors"
+                            >
+                              <X className="w-3 h-3" /> Reddet
+                            </button>
+                          </div>
+                        )}
                       </div>
                       {!notification.read && (
                         <div className="w-2 h-2 bg-primary rounded-full mt-1"></div>

@@ -5,6 +5,8 @@ import { Mail, Lock, User, UserPlus } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import GoldenStarLogo from '../components/GoldenStarLogo';
+import MouseFollowStars from '../components/MouseFollowStars';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -51,7 +53,7 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validate()) return;
 
     try {
@@ -72,62 +74,53 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+    <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto relative">
+      <MouseFollowStars />
+
       {/* Left Side - Branding */}
       <motion.div
-        className="hidden md:flex flex-col justify-center p-12 bg-gradient-to-br from-primary-light to-primary rounded-2xl text-white"
+        className="hidden md:flex flex-col justify-center p-12 bg-gradient-to-br from-primary to-primary-light rounded-2xl text-white relative z-10 h-full"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <motion.div
-          animate={{
-            rotate: [0, 5, -5, 0],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        >
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center mb-6">
-            <span className="text-4xl font-bold">N</span>
-          </div>
-        </motion.div>
+        <div className="flex items-center justify-center mb-6 w-20 h-20 mx-auto">
+          <GoldenStarLogo />
+        </div>
 
-        <h1 className="text-4xl font-bold mb-4">Aramıza Katılın</h1>
-        <p className="text-lg opacity-90 mb-8">
-          Modern proje yönetiminin gücünü keşfedin
+        <h1 className="text-4xl font-bold mb-4 text-center">NOVATRA</h1>
+        <p className="text-lg opacity-90 mb-8 text-center">
+          Premium Proje Yönetim Platformu
         </p>
 
         <div className="space-y-4">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
-              🚀
+              ✓
             </div>
             <div>
-              <h3 className="font-semibold mb-1">Hızlı Başlangıç</h3>
-              <p className="text-sm opacity-80">Dakikalar içinde kurulum yapın</p>
+              <h3 className="font-semibold mb-1">Akıllı Görev Akışı Yönetimi</h3>
+              <p className="text-sm opacity-80">Süreçlerinizi dinamik ve modern bir yapıda düzenleyin</p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
-              👥
+              ✓
             </div>
             <div>
-              <h3 className="font-semibold mb-1">Ekip İşbirliği</h3>
-              <p className="text-sm opacity-80">Sınırsız takım üyesi ekleyin</p>
+              <h3 className="font-semibold mb-1">Gerçek Zamanlı İşbirliği</h3>
+              <p className="text-sm opacity-80">Ekibinizle anında iletişim kurun</p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
-              ⚡
+              ✓
             </div>
             <div>
-              <h3 className="font-semibold mb-1">Güçlü Özellikler</h3>
-              <p className="text-sm opacity-80">AI asistan, kanban, chat ve daha fazlası</p>
+              <h3 className="font-semibold mb-1">AI Destekli Asistan</h3>
+              <p className="text-sm opacity-80">Yapay zeka ile verimliliğinizi artırın</p>
             </div>
           </div>
         </div>
@@ -135,12 +128,12 @@ const RegisterPage = () => {
 
       {/* Right Side - Register Form */}
       <motion.div
-        className="flex flex-col justify-center p-8 md:p-12"
+        className="flex flex-col p-8 md:p-12 relative z-10 h-full"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-2xl border border-border-light dark:border-border-dark">
+        <div className="bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-2xl border border-border-light dark:border-border-dark h-full flex flex-col justify-center">
           <h2 className="text-3xl font-bold gradient-text mb-2">Hesap Oluşturun</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
             Ücretsiz hesabınızı oluşturun
@@ -212,8 +205,8 @@ const RegisterPage = () => {
               required
             />
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               fullWidth
               icon={<UserPlus className="w-5 h-5" />}
             >

@@ -11,7 +11,7 @@ const InviteMemberModal = ({ isOpen, onClose, projectId }) => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('user');
   const [error, setError] = useState('');
-  const { addMember } = useProjects();
+  const { addMember, sendInvitation } = useProjects();
   const { currentUser, getUserByEmail, createUserFromEmail } = useAuth();
   const { createNotification } = useContext(NotificationContext);
 
@@ -39,14 +39,19 @@ const InviteMemberModal = ({ isOpen, onClose, projectId }) => {
       user = createUserFromEmail(email, role);
     }
 
-    // Add member to project with selected role
-    addMember(projectId, user.id, currentUser.id, role);
+    // Send invitation
+    const invitation = sendInvitation(projectId, user.id, currentUser.id, role);
 
     // Send notification
     createNotification({
       userId: user.id,
-      message: `${currentUser.firstName} ${currentUser.lastName} sizi projeye ekledi`,
-      type: 'member_added'
+      message: `${currentUser.firstName} ${currentUser.lastName} sizi projeye davet etti`,
+      type: 'project_invitation',
+      payload: {
+        invitationId: invitation.id,
+        projectId: projectId,
+        role: role
+      }
     });
 
     setEmail('');

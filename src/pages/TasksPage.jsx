@@ -20,7 +20,7 @@ const TasksPage = () => {
 
   const project = getProjectById(projectId);
   const currentUserRole = getUserRoleInProject(projectId, currentUser?.id);
-  
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -36,28 +36,40 @@ const TasksPage = () => {
   const handleDragStart = (event) => {
     const { active } = event;
     const task = active.data.current?.task;
-    
+
     // Check if user can drag this task
     if (currentUserRole === 'user' && task?.assigneeId !== currentUser?.id) {
       return; // Prevent dragging
     }
-    
+
     setActiveTask(task);
   };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    
+
     if (!over) {
       setActiveTask(null);
       return;
     }
 
     const task = active.data.current?.task;
-    const newStatus = over.id;
+    let newStatus = over.id;
+
+    // If dropped over another task, get that task's status
+    if (over.data.current?.type === 'task') {
+      newStatus = over.data.current.task.status;
+    }
 
     // Check if user has permission to move this task
     if (currentUserRole === 'user' && task?.assigneeId !== currentUser?.id) {
+      setActiveTask(null);
+      return;
+    }
+
+    // Validate new status
+    const validStatuses = ['todo', 'inprogress', 'done'];
+    if (!validStatuses.includes(newStatus)) {
       setActiveTask(null);
       return;
     }
@@ -83,13 +95,13 @@ const TasksPage = () => {
         <div>
           <h1 className="text-3xl font-bold mb-2">Görevler</h1>
           <p className="text-gray-600 dark:text-gray-400">
-            {currentUserRole === 'user' 
-              ? 'Sadece size atanan görevleri görüyorsunuz' 
+            {currentUserRole === 'user'
+              ? 'Sadece size atanan görevleri görüyorsunuz'
               : 'Tüm görevleri görüntüleyebilir ve yönetebilirsiniz'
             }
           </p>
         </div>
-        <Button 
+        <Button
           icon={<Plus />}
           onClick={() => setIsModalOpen(true)}
         >
@@ -126,7 +138,7 @@ const TasksPage = () => {
           />
         </div>
 
-        <DragOverlay>
+        <DragOverlay className="z-50">
           {activeTask ? <KanbanCard task={activeTask} /> : null}
         </DragOverlay>
       </DndContext>

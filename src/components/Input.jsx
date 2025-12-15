@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+
 const Input = ({
   type = 'text',
   label,
@@ -10,6 +13,10 @@ const Input = ({
   disabled = false,
   className = ''
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPassword = type === 'password';
+  const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+
   return (
     <div className={`w-full ${className}`}>
       {label && (
@@ -24,7 +31,7 @@ const Input = ({
           </div>
         )}
         <input
-          type={type}
+          type={inputType}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
@@ -32,6 +39,7 @@ const Input = ({
           className={`
             w-full px-4 py-3 rounded-lg
             ${icon ? 'pl-10' : ''}
+            ${isPassword ? 'pr-10' : ''}
             bg-surface-light dark:bg-surface-dark
             border-2 ${error ? 'border-red-500' : 'border-border-light dark:border-border-dark'}
             text-gray-900 dark:text-gray-100
@@ -41,6 +49,15 @@ const Input = ({
             ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
         />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
+          >
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          </button>
+        )}
       </div>
       {error && (
         <p className="mt-1 text-sm text-red-500">{error}</p>

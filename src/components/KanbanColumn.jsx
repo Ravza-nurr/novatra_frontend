@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import KanbanCard from './KanbanCard';
 import { Plus } from 'lucide-react';
 
-const KanbanColumn = ({ 
-  id, 
-  title, 
-  tasks, 
+const KanbanColumn = ({
+  id,
+  title,
+  tasks,
   onAddTask,
   color = 'gray'
 }) => {
@@ -27,9 +27,10 @@ const KanbanColumn = ({
       ref={setNodeRef}
       className={`
         flex flex-col h-full min-w-[320px] rounded-xl
-        bg-gray-50 dark:bg-gray-900/30
+        bg-gray-50 dark:bg-gray-900
         border-2 ${isOver ? 'border-primary' : colorClasses[color]}
         transition-all duration-200
+        relative z-20
         ${isOver ? 'shadow-lg shadow-primary/20 scale-[1.02]' : ''}
       `}
       initial={{ opacity: 0, y: 20 }}

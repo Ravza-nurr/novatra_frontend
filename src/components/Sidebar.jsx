@@ -19,7 +19,7 @@ const Sidebar = ({ inProject = false }) => {
     { path: `/project/${projectId}/tasks`, icon: FolderKanban, label: 'Görevler' },
     { path: `/project/${projectId}/activity`, icon: Activity, label: 'Aktivite' },
     { path: `/project/${projectId}/chat`, icon: MessageSquare, label: 'Chat' },
-    { path: `/project/${projectId}/ai`, icon: Sparkles, label: 'AI Asistan' },
+    { path: `/project/${projectId}/ai`, icon: Sparkles, label: 'NovaAI' },
   ] : [];
 
   const links = inProject ? projectLinks : dashboardLinks;
@@ -69,14 +69,14 @@ const Sidebar = ({ inProject = false }) => {
               className={({ isActive }) => `
                 flex items-center gap-3 px-4 py-3 rounded-lg
                 transition-all duration-200
-                ${isActive 
-                  ? 'bg-gradient-to-r from-primary to-primary-light text-white shadow-lg shadow-primary/30' 
+                ${isActive
+                  ? 'bg-gradient-to-r from-primary to-primary-light text-white shadow-lg shadow-primary/30'
                   : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
                 }
               `}
             >
               {({ isActive }) => (
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-3 w-full"
                   whileHover={{ x: 4 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
