@@ -28,10 +28,13 @@ export const TaskProvider = ({ children }) => {
   }, [tasks]);
 
   const createTask = (taskData) => {
+    // If admin assigns task to another user, set status to 'pending'
+    const isAdminAssigning = currentUser.role === 'admin' && taskData.assigneeId && taskData.assigneeId !== currentUser.id;
+
     const newTask = {
       id: uuidv4(),
       ...taskData,
-      status: currentUser.role === 'admin' ? (taskData.status || 'todo') : 'todo',
+      status: isAdminAssigning ? 'pending' : (taskData.status || 'todo'),
       assigneeId: currentUser.role === 'admin' ? taskData.assigneeId : currentUser.id,
       createdAt: new Date().toISOString(),
       createdBy: currentUser.id
@@ -48,13 +51,13 @@ export const TaskProvider = ({ children }) => {
     }
 
     // Send notification if admin assigned task to another user
-    if (currentUser.role === 'admin' && taskData.assigneeId && taskData.assigneeId !== currentUser.id) {
+    if (isAdminAssigning) {
       if (createNotification) {
         createNotification({
           userId: taskData.assigneeId,
           message: `${currentUser.firstName} sana yeni görev atadı: "${newTask.title}"`,
-          taskId: newTask.id,
-          type: 'task_assigned'
+          type: 'task_assigned',
+          payload: { taskId: newTask.id }
         });
       }
     }
@@ -66,7 +69,7 @@ export const TaskProvider = ({ children }) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    setTasks(tasks.map(t => 
+    setTasks(tasks.map(t =>
       t.id === taskId ? { ...t, ...updates } : t
     ));
 
@@ -77,7 +80,7 @@ export const TaskProvider = ({ children }) => {
         'inprogress': 'In Progress',
         'done': 'Done'
       };
-      
+
       const displayName = userName || `${currentUser.firstName} ${currentUser.lastName}`;
       addActivity(task.projectId, {
         userId: currentUser.id,
@@ -96,12 +99,12 @@ export const TaskProvider = ({ children }) => {
 
   const getProjectTasks = (projectId, userId, userRole) => {
     const projectTasks = tasks.filter(t => t.projectId === projectId);
-    
+
     // If user role is 'user', only show tasks assigned to them
     if (userRole === 'user') {
       return projectTasks.filter(t => t.assigneeId === userId);
     }
-    
+
     // Admin sees all tasks
     return projectTasks;
   };
@@ -111,6 +114,69 @@ export const TaskProvider = ({ children }) => {
     return projectTasks.filter(t => t.status === status);
   };
 
+  const getPendingTasks = (projectId, userId) => {
+    return tasks.filter(t => t.projectId === projectId && t.assigneeId === userId && t.status === 'pending');
+  };
+
+  const acceptTask = (taskId) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task || task.status !== 'pending') return false;
+
+    // Update task to todo status
+    setTasks(tasks.map(t =>
+      t.id === taskId ? { ...t, status: 'todo', acceptedAt: new Date().toISOString() } : t
+    ));
+
+    // Add activity log
+    if (addActivity) {
+      addActivity(task.projectId, {
+        userId: currentUser.id,
+        message: `"${task.title}" görevi kabul edildi`
+      });
+    }
+
+    return true;
+  };
+
+  const rejectTask = (taskId, reason = '') => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task || task.status !== 'pending') return false;
+
+    // Update task to rejected status
+    setTasks(tasks.map(t =>
+      t.id === taskId ? {
+        ...t,
+        status: 'rejected',
+        rejectedBy: currentUser.id,
+        rejectedAt: new Date().toISOString(),
+        rejectionReason: reason
+      } : t
+    ));
+
+    // Add activity log
+    if (addActivity) {
+      const reasonText = reason ? ` (Neden: ${reason})` : '';
+      addActivity(task.projectId, {
+        userId: currentUser.id,
+        message: `"${task.title}" görevi reddedildi${reasonText}`
+      });
+    }
+
+    return true;
+  };
+
+  const acknowledgeRejectedTask = (taskId) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task || task.status !== 'rejected') return false;
+
+    // Mark task as acknowledged
+    setTasks(tasks.map(t =>
+      t.id === taskId ? { ...t, acknowledged: true, acknowledgedAt: new Date().toISOString() } : t
+    ));
+
+    return true;
+  };
+
   const value = {
     tasks,
     createTask,
@@ -118,7 +184,11 @@ export const TaskProvider = ({ children }) => {
     deleteTask,
     getTaskById,
     getProjectTasks,
-    getTasksByStatus
+    getTasksByStatus,
+    getPendingTasks,
+    acceptTask,
+    rejectTask,
+    acknowledgeRejectedTask
   };
 
   return (

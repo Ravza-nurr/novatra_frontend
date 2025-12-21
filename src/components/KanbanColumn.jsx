@@ -28,34 +28,30 @@ const KanbanColumn = ({
       className={`
         flex flex-col h-full min-w-[320px] rounded-xl
         bg-gray-50 dark:bg-gray-900
-        border-2 ${isOver ? 'border-primary' : colorClasses[color]}
+        border-2 ${colorClasses[color]}
+        ${isOver && 'ring-2 ring-primary/50'}
         transition-all duration-200
-        relative z-20
-        ${isOver ? 'shadow-lg shadow-primary/20 scale-[1.02]' : ''}
       `}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0, y: -20 }}
     >
-      {/* Column Header */}
-      <div className="p-4 border-b border-border-light dark:border-border-dark">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full bg-${color}-500`}></div>
-            <h3 className="font-semibold text-lg">{title}</h3>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {tasks.length}
-            </span>
-          </div>
-          {onAddTask && (
-            <button
-              onClick={onAddTask}
-              className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          )}
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center gap-3">
+          <h3 className="font-semibold text-lg">{title}</h3>
+          <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-200 dark:bg-gray-800">
+            {tasks.length}
+          </span>
         </div>
+        {onAddTask && (
+          <button
+            onClick={onAddTask}
+            className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Tasks List */}

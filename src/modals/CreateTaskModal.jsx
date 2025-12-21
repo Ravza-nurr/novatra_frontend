@@ -10,15 +10,16 @@ const CreateTaskModal = ({ isOpen, onClose, projectId, members = {}, currentUser
   const { currentUser } = useAuth();
   const { users } = useContext(AuthContext);
   const { createTask } = useTasks();
-  
+
   // Convert members object to array of user IDs
   const memberIds = Object.keys(members);
-  
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     assigneeId: currentUser?.id || '',
     priority: 'Medium',
+    difficulty: 'Medium',
     status: 'todo'
   });
   const [errors, setErrors] = useState({});
@@ -55,6 +56,7 @@ const CreateTaskModal = ({ isOpen, onClose, projectId, members = {}, currentUser
       description: '',
       assigneeId: currentUser?.id || '',
       priority: 'Medium',
+      difficulty: 'Medium',
       status: 'todo'
     });
     setErrors({});
@@ -164,6 +166,28 @@ const CreateTaskModal = ({ isOpen, onClose, projectId, members = {}, currentUser
           </select>
         </div>
 
+        <div>
+          <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+            Zorluk Seviyesi
+          </label>
+          <select
+            value={formData.difficulty}
+            onChange={handleChange('difficulty')}
+            className="
+              w-full px-4 py-3 rounded-lg
+              bg-surface-light dark:bg-surface-dark
+              border-2 border-border-light dark:border-border-dark
+              text-gray-900 dark:text-gray-100
+              focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20
+              transition-all duration-200
+            "
+          >
+            <option value="Easy">Kolay</option>
+            <option value="Medium">Orta</option>
+            <option value="Hard">Zor</option>
+          </select>
+        </div>
+
         {/* Status - Only for admin */}
         {currentUserRole === 'admin' && (
           <div>
@@ -206,7 +230,7 @@ const CreateTaskModal = ({ isOpen, onClose, projectId, members = {}, currentUser
           </Button>
         </div>
       </form>
-    </Modal>
+    </Modal >
   );
 };
 

@@ -1,16 +1,22 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, Check } from 'lucide-react';
 import { useContext, useState, useRef, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { NotificationContext } from '../context/NotificationContext';
 import { useAuth } from '../hooks/useAuth';
 import { useProjects } from '../hooks/useProjects';
+import { useTasks } from '../hooks/useTasks';
 import { formatDistanceToNow } from '../utils/dateUtils';
+import RejectTaskModal from '../modals/RejectTaskModal';
 
 const NotificationBell = () => {
   const { currentUser } = useAuth();
   const { getUserNotifications, getUnreadCount, markAsRead, markAllAsRead, deleteNotification, updateNotification } = useContext(NotificationContext);
   const { respondToInvitation } = useProjects();
+  const { getTaskById, acceptTask, rejectTask } = useTasks();
   const [isOpen, setIsOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [taskToReject, setTaskToReject] = useState(null);
   const dropdownRef = useRef(null);
 
   const notifications = currentUser ? getUserNotifications(currentUser.id) : [];
@@ -136,6 +142,59 @@ const NotificationBell = () => {
                             </button>
                           </div>
                         )}
+
+                        {notification.type === 'task_assigned' && notification.payload && (
+                          <div className="flex gap-2 mt-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const taskId = notification.payload.taskId;
+                                const task = getTaskById(taskId);
+
+                                if (!task) {
+                                  toast.error('Bu görev artık mevcut değil');
+                                  deleteNotification(notification.id);
+                                  return;
+                                }
+
+                                const success = acceptTask(taskId);
+                                if (success) {
+                                  toast.success('Görev To Do listene eklendi');
+                                  updateNotification(notification.id, {
+                                    message: `Görev kabul edildi: "${task.title}"`,
+                                    type: 'info',
+                                    payload: null,
+                                    read: true
+                                  });
+                                } else {
+                                  toast.error('Görev kabul edilemedi');
+                                }
+                              }}
+                              className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors"
+                            >
+                              <Check className="w-3 h-3" /> Kabul Et
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const taskId = notification.payload.taskId;
+                                const task = getTaskById(taskId);
+
+                                if (!task) {
+                                  toast.error('Bu görev artık mevcut değil');
+                                  deleteNotification(notification.id);
+                                  return;
+                                }
+
+                                setTaskToReject({ taskId, notification, task });
+                                setRejectModalOpen(true);
+                              }}
+                              className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200 transition-colors"
+                            >
+                              <X className="w-3 h-3" /> Reddet
+                            </button>
+                          </div>
+                        )}
                       </div>
                       {!notification.read && (
                         <div className="w-2 h-2 bg-primary rounded-full mt-1"></div>
@@ -148,6 +207,27 @@ const NotificationBell = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Reject Task Modal */}
+      <RejectTaskModal
+        isOpen={rejectModalOpen}
+        onClose={() => {
+          setRejectModalOpen(false);
+          setTaskToReject(null);
+        }}
+        onReject={(reason) => {
+          if (taskToReject) {
+            const success = rejectTask(taskToReject.taskId, reason);
+            if (success) {
+              toast.error('Görev reddedildi');
+              deleteNotification(taskToReject.notification.id);
+            } else {
+              toast.error('Görev reddedilemedi');
+            }
+          }
+        }}
+        taskTitle={taskToReject?.task?.title || ''}
+      />
     </div>
   );
 };

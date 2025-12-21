@@ -9,7 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 const KanbanCard = ({ task }) => {
   const { currentUser, getUserById } = useAuth();
   const assignee = getUserById(task.assigneeId);
-  
+
   const {
     attributes,
     listeners,
@@ -17,7 +17,7 @@ const KanbanCard = ({ task }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ 
+  } = useSortable({
     id: task.id,
     data: {
       type: 'task',
@@ -48,40 +48,34 @@ const KanbanCard = ({ task }) => {
         border border-border-light dark:border-border-dark
         cursor-grab active:cursor-grabbing
         transition-all duration-200
-        hover:shadow-lg hover:shadow-primary/10
-        ${isDragging ? 'opacity-50 scale-105 shadow-2xl rotate-2' : ''}
+        ${isDragging && 'opacity-50'}
       `}
-      whileHover={{ y: -2 }}
-      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
     >
       {/* Drag Handle */}
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <GripVertical className="w-4 h-4 text-gray-400" />
       </div>
 
-      {/* Task Title */}
       <h4 className="font-semibold text-sm mb-2 pr-6">{task.title}</h4>
 
-      {/* Task Description */}
       {task.description && (
         <p className="text-xs text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
           {task.description}
         </p>
       )}
 
-      {/* Footer */}
       <div className="flex items-center justify-between mt-3">
-        {/* Priority Badge */}
         <Badge variant={priorityVariant[task.priority]} size="sm">
           {task.priority}
         </Badge>
-
-        {/* Assignee Avatar */}
         {assignee && (
-          <Avatar 
-            initials={assignee.avatarInitials} 
+          <Avatar
+            src={assignee.avatar}
+            alt={`${assignee.firstName} ${assignee.lastName}`}
             size="sm"
-            online={assignee.id === currentUser?.id}
           />
         )}
       </div>
